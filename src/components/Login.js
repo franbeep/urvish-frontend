@@ -147,7 +147,9 @@ export default function Login() {
       setErrorMessage(response.error);
       return;
     }
+
     localStorage.setItem("token", response.token);
+    localStorage.setItem("user", JSON.stringify(response.user));
     setSuccessMessage("Logged In successfully.");
     setErrorMessage("");
 

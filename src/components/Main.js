@@ -35,6 +35,18 @@ function Main(props) {
 
   const classes = useStyles();
 
+  const user = JSON.parse(
+    localStorage.getItem("user") || "{ is_admin: false }"
+  );
+
+  const adminTabs = [
+    <Tab key={0} label="Dashboard" icon={<DashboardIcon />} />,
+    <Tab key={1} label="User Manager" icon={<PeopleOutlineIcon />} />,
+    <Tab key={2} label="Spot Manager" icon={<RoomIcon />} />,
+    <Tab key={3} label="Booking Manager" icon={<MenuBookIcon />} />,
+    <Tab key={4} label="Statistics" icon={<EqualizerIcon />} />,
+  ];
+
   return (
     <div className={classes.root}>
       {redirect}
@@ -48,11 +60,11 @@ function Main(props) {
           textColor="primary"
           aria-label="scrollable force tabs example"
         >
-          <Tab label="Dashboard" icon={<DashboardIcon />} />
-          <Tab label="User Manager" icon={<PeopleOutlineIcon />} />
-          <Tab label="Spot Manager" icon={<RoomIcon />} />
-          <Tab label="Booking Manager" icon={<MenuBookIcon />} />
-          <Tab label="Statistics" icon={<EqualizerIcon />} />
+          {user.is_admin ? (
+            adminTabs
+          ) : (
+            <Tab label="Booking Manager" icon={<MenuBookIcon />} />
+          )}
           <Tab
             label="Log Out"
             icon={<ExitToAppIcon />}
@@ -64,11 +76,20 @@ function Main(props) {
         </Tabs>
       </AppBar>
       <Container maxWidth="lg" spacing={10}>
-        {value === 0 && <Dashboard />}
-        {value === 1 && <UserManager />}
-        {value === 2 && <SpotManager />}
-        {value === 3 && <BookingManager />}
-        {value === 4 && <Statistics />}
+        {user.is_admin ? (
+          <>
+            {value === 0 && <Dashboard />}
+            {value === 1 && <UserManager />}
+            {value === 2 && <SpotManager />}
+            {value === 3 && <BookingManager />}
+            {value === 4 && <Statistics />}
+          </>
+        ) : (
+          <>
+            {/* in case you want to add more later */}
+            {value === 0 && <BookingManager />}
+          </>
+        )}
       </Container>
     </div>
   );

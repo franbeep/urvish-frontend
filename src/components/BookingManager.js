@@ -270,6 +270,10 @@ export default function BookingManager() {
       "An error occurred while fetching Bookings. Please try again later.";
   if (data && data.getBookings.error) errorMessage = data.getBookings.message;
 
+  const user = JSON.parse(
+    localStorage.getItem("user") || "{ is_admin: false }"
+  );
+
   return (
     <>
       <Backdrop className={classes.backdrop} open={dimmer} onClick={() => {}}>
@@ -414,7 +418,8 @@ export default function BookingManager() {
                 availableUsersQuery.loading || availableUsersQuery.error
               }
             >
-              {availableUsersQuery.data &&
+              {user.is_admin &&
+                availableUsersQuery.data &&
                 availableUsersQuery.data.getUsers.obj.map((item, index) => {
                   return (
                     <MenuItem key={index} value={item.id}>
@@ -422,6 +427,12 @@ export default function BookingManager() {
                     </MenuItem>
                   );
                 })}
+
+              {!user.is_admin && (
+                <MenuItem value={user.id}>
+                  {user.first_name} {user.last_name}
+                </MenuItem>
+              )}
             </Select>
           </FormControl>
 
@@ -509,23 +520,25 @@ export default function BookingManager() {
             }}
           />
 
-          <FormGroup aria-label="position" className={classes.margin} row>
-            <FormControlLabel
-              value="top"
-              control={
-                <Switch
-                  color="primary"
-                  checked={isPaidField}
-                  onChange={() => {
-                    setIsPaidField(!isPaidField);
-                  }}
-                />
-              }
-              className={classes.noSideMargin}
-              label="Is Paid"
-              labelPlacement="top"
-            />
-          </FormGroup>
+          {user.is_admin && (
+            <FormGroup aria-label="position" className={classes.margin} row>
+              <FormControlLabel
+                value="top"
+                control={
+                  <Switch
+                    color="primary"
+                    checked={isPaidField}
+                    onChange={() => {
+                      setIsPaidField(!isPaidField);
+                    }}
+                  />
+                }
+                className={classes.noSideMargin}
+                label="Is Paid"
+                labelPlacement="top"
+              />
+            </FormGroup>
+          )}
         </DialogContent>
 
         <DialogActions>
